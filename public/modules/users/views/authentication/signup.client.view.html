@@ -1,0 +1,51 @@
+<md-content layout-padding layout-gt-sm="row" data-ng-controller="AuthenticationController">
+	<div flex-gt-sm>
+		<h3>Sign up using your social accounts</h3>
+		<div>
+			<a href="/auth/reddit" >
+				<img src="/modules/users/img/buttons/reddit.png" style="width:128px">
+			</a>
+			<a href="/auth/google">
+				<img src="/modules/users/img/buttons/google.png" style="width: 128px">
+			</a>
+			<a href="/auth/github">
+				<img src="/modules/users/img/buttons/github.png" style="width: 128px">
+			</a>
+		</div>
+	</div>
+	<div flex-gt-sm>
+		<h3 class="col-md-12 text-center">Or with your email</h3>
+		<div>
+			<form name="userForm" data-ng-submit="signup()" class="signin form-horizontal" novalidate autocomplete="off">
+				<md-content>
+					<md-input-container>
+						<label for="firstName">First Name</label>
+						<input type="text" required id="firstName" name="firstName" data-ng-model="credentials.firstName" placeholder="First Name">
+					</md-input-container>
+					<md-input-container class="form-group">
+						<label for="lastName">Last Name</label>
+						<input type="text" id="lastName" name="lastName" data-ng-model="credentials.lastName" placeholder="Last Name">
+					</md-input-container>
+					<md-input-container class="form-group">
+						<label for="email">Email</label>
+						<input type="email" id="email" name="email" data-ng-model="credentials.email" placeholder="Email">
+					</md-input-container>
+					<md-input-container class="form-group">
+						<label for="username">Username</label>
+						<input type="text" id="username" name="username" data-ng-model="credentials.username" placeholder="Username">
+					</md-input-container>
+					<md-input-container class="form-group">
+						<label for="password">Password</label>
+						<input type="password" id="password" name="password" data-ng-model="credentials.password" placeholder="Password">
+					</md-input-container>
+					<div class="md-actions">
+						<md-button type="submit" class="md-primary" aria-label="Sign up">Sign up</md-button>
+					</div>
+					<div data-ng-show="error" class="text-center text-danger">
+						<strong data-ng-bind="error"></strong>
+					</div>
+				</md-content>
+			</form>
+		</div>
+	</div>
+</md-content>

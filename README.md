@@ -1,0 +1,1 @@
+The Incremental Games Plaza is a website that makes it easy for people to find and recommend incremental/idle games.

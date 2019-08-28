@@ -1,0 +1,72 @@
+<md-content ng-init="findOne()" ng-controller="PlaylistsController">
+    <div class="breadcrumb" layout="row" layout-align="start center">
+        <md-button href="/playlists">Playlists</md-button><span>&gt;</span>
+        <md-button>{{playlist.name}}</md-button>
+    </div>
+    <md-content>
+        <div>
+            <div class="md-padding">
+                <div style="margin: 5px 0 15px" layout="row" layout-align="start start">
+                    <div layout="column" ng-show="playlist.published">
+                        <md-button class="md-icon-button md-mini" ng-class="{'md-primary':playlist.myVote==1}" ng-click="vote(1)">
+                            <span class="fa fa-arrow-up"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-mini" ng-class="{'md-warn':playlist.myVote==-1}" ng-click="vote(-1)">
+                            <span class="fa fa-arrow-down"></span>
+                        </md-button>
+                    </div>
+                    <div ng-class="{'md-padding':playlist.published}">
+                        <div layout="row" layout-align="start center"  style="margin-bottom: 15px">
+                            <span class="md-title">{{playlist.name}}</span>
+                            <span flex></span>
+                            <md-button class="clickable md-accent md-hue-2" ng-click="publish()" ng-hide="publishing" ng-if="canPublish">Publish
+                                <md-tooltip>Makes this Playlist visible to everyone</md-tooltip>
+                            </md-button>
+                        </div>
+                        <md-progress-linear ng-show="publishing"></md-progress-linear>
+                        <div>
+                            <a href="/m/{{playlist.user.username}}">{{playlist.user.username}}</a>
+                            <span am-time-ago="playlist.created" title="{{playlist.created}}"></span>
+                            <span>
+                                ({{playlist.liked - playlist.disliked}} | <span class="item-liked">+{{playlist.liked}}</span> <span class="item-disliked">-{{playlist.disliked}}</span>)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div layout="row" layout-align="start center">
+                    Description <span flex></span>
+                    <md-button ng-if="canEdit" class="nocaps md-primary" ng-click="startEditDescription()">
+                        Edit
+                    </md-button>
+                </div>
+                <md-content layout-padding class="panel" ng-show="playlist.descriptionHTML && !showDescriptionEditor">
+                    <div ng-bind-html="playlist.descriptionHTML"></div>
+                </md-content>
+                <md-content ng-show="showDescriptionEditor" class="panel" layout="column">
+                    <md-input-container>
+                        <label>Enter description (Uses Markdown syntax)</label>
+                        <textarea ng-model="newPlaylistDescription">
+                        </textarea>
+                    </md-input-container>
+                    <div>
+                        <md-button ng-click="updateDescription()" class="md-primary">
+                            Update
+                        </md-button>
+                        <md-button ng-click="cancelEditDescription()">
+                            Cancel
+                        </md-button>
+                    </div>
+                </md-content>
+            </div>
+            <div class="md-padding">
+                <div class="md-title" ng-show="playlist.games.length">{{playlist.games.length}} game{{playlist.games.length ==1 ? '' : 's'}} <span ng-if="playable.length"><md-button class="md-raised md-accent" ng-click="openInLounge()">Open games in Lounge<md-tooltip>Open games in The Lounge</md-tooltip></md-button></span></div>
+                <div class="md-title" ng-hide="playlist.games.length">
+                    No games in this list, you can add it from the <a href="/games">Games List</a>
+                </div>
+                <div class="clearfix gameTiles" style="margin: 20px 0px">
+                    <game-tile game-id="game._id" ng-repeat="game in playlist.games track by game._id" nolink="true"></game-tile>
+                </div>
+            </div>
+        </div>
+    </md-content>
+</md-content>

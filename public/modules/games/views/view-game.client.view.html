@@ -1,0 +1,286 @@
+<md-content>
+    <a href="https://store.steampowered.com/app/734980/Prosperity/" target="new" class="hero-3">
+        Prosperity now on Steam Early Access
+    </a>
+</md-content>
+<md-content ng-init="findOne()">
+    <md-content layout="row" layout-align="start start" ng-show="game" layout-wrap>
+        <md-content layout="column" flex="100" flex-sm="50" flex-gt-sm="40" class="gameLeftCol">
+            <div layout="column" layout-align="center center" class="logo-area">
+                <img ng-if="game.logo" ng-src="/uploads/{{game.logo}}" style="max-height: 250px; max-width:100%">
+                <div layout="row" layout-align="space-between center">
+                    <button ng-if="canChangeLogo" ngf-select="true" ng-model="uploads.logo" ngf-multiple="false" ngf-capture="camera" accept="image/*" class="change-logo-button md-button" ng-class="{'md-raised':!game.logo, 'md-warn': !game.logo, 'md-primary': game.logo}" aria-label="Change Logo">{{game.logo? 'Change Logo':'Add Logo'}}</button>
+                </div>
+            </div>
+            <div class="md-title">
+                <h1 class="titletext"><a ng-href="{{game.link}}">{{game.name}}</a></h1>
+            </div>
+            <md-divider></md-divider>
+            <div class="md-actions" data-ng-show="canEdit" layout="row" layout-align="end center" style="border-top:solid 1px #888">
+                <md-button ng-click="editGame($event)" class="md-primary" aria-label="Edit">
+                    <md-icon class="fa fa-lg" md-font-icon="fa-edit"></md-icon> Edit
+                </md-button>
+                <md-button class=" md-warn" ng-show="canDeleteGame" data-ng-click="confirmRemove($event);" aria-label="Remove">
+                    <md-icon class="fa fa-lg" md-font-icon="fa-trash"></md-icon> Delete
+                </md-button>
+            </div>
+            <md-content>
+                <div layout-padding layout="row" layout-align="center center" layout-wrap>
+                    <small>
+                        <em class="text-muted">
+                            Added <span am-time-ago="game.created" title="{{game.created}}"></span>
+                        </em>
+                    </small>
+                    <span flex></span>
+                    <small>
+                        <span class="nowrap">
+                            {{game.viewed}} Views
+                        </span>
+                    </small>
+                    <small>
+                        <span class="nowrap">
+                            <span ng-if="authentication.user">
+                                <md-button aria-label="Unlike" class="md-primary md-icon-button"  ng-show="likesThis" ng-click="unlike()">
+                                    <md-icon class="fa fa-lg" md-font-icon="fa-heart"></md-icon>
+                                </md-button>
+                                <md-button aria-label="Like" ng-hide="likesThis" class="md-primary md-icon-button" ng-click="like()">
+                                    <md-icon class="fa fa-lg" md-font-icon="fa-heart-o"></md-icon>
+                                </md-button>
+                            </span>
+                            {{game.liked}} Likes
+                        </span>
+                    </small>
+                    <small ng-if="canCreatePlaylist">
+                        <span class="nowrap ">
+                            <md-button class="md-accent md-icon-button autoWidth nocaps" ng-click="openPlaylistMgr($event, game)">
+                                <span class="fa fa-list"></span>
+                                <span>Add to Playlist</span>
+                            </md-button>
+                            
+                        </span>
+                    </small>
+                </div>
+                <md-divider></md-divider>
+                <div layout-padding>
+                    Created by:
+                    <a ng-href="/m/{{username}}" ng-repeat="username in game.creatorNames" data-role="creator">{{username}}</a>
+                    <span ng-show="!game.creatorNames || game.creatorNames.length === 0">
+                        Not claimed yet! If this is your game, <md-button class="md-primary clickable nocaps" ng-click="showClaimInstructions=true">Click here</md-button>
+                    </span>
+                    <div style="padding: 5px; margin: 5px; border: solid 1px #888" ng-show="showClaimInstructions">
+                        <div>How to claim a game</div>
+                        <ol>
+                            <li ng-class="{'strikeout':authentication.user}">Sign in with reddit</li>
+                            <li>Update your game to link to your profile (http://plaza.dsolver.ca/m/{{authentication.user.username}}) somewhere on a landing page, or about page</li>
+                            <li><a href="https://www.reddit.com/message/compose/?to=dSolver" target="_new">Send a PM to /u/dSolver</a> via Reddit</li>
+                            <li>Wait for The Plaza admins to confirm that you are set as the creator</li>
+                            <li>(Optional) Repeat this for each game in The Plaza that you are the creator of, add your games if they're not in the list</li>
+                            <li>(Optional #2) Remove the link from your game if you like, we are not forcing you to keep it</li>
+                        </ol>
+                    </div>
+                </div>
+                <md-list>
+                    <p layout="row" layout-align="start center" data-role="social">
+                        <md-button class="md-icon-button md-raised" ng-click="openLounge(game._id)" target="lounge" ng-if="game.playable">
+                            <span class="fa fa-glass fa-lg"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="https://www.reddit.com/r/{{game.subreddit}}" target="_blank" ng-if="game.subreddit">
+                            <span class="fa fa-lg fa-tidder icon tidder"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="https://www.twitter.com/{{game.developer_twitter}}" target="_blank" class="md-primary" aria-label="{{game.developer_twitter}}" ng-if="game.developer_twitter">
+                            <span class="fa fa-lg fa-rettiwt icon rettiwt"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="{{game.facebook}}" target="_blank" class="md-primary" aria-label="{{game.facebook}}" ng-if="game.facebook">
+                            <span class="fa fa-lg fa-koobecaf icon koobecaf"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="https://www.twitch.tv/{{game.twitch}}" target="_blank" class="md-primary" aria-label="{{game.twitch}}" ng-if="game.twitch">
+                            <span class="fa fa-lg fa-twitch icon twitch"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="{{game.googlePlay}}" target="_blank" class="md-primary" aria-label="{{game.googlePlay}}" ng-if="game.googlePlay">
+                            <span class="fa fa-lg fa-android icon android"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="{{game.appStore}}" target="_blank" class="md-primary" aria-label="{{game.appStore}}" ng-if="game.appStore">
+                            <span class="fa fa-lg fa-apple icon appStore"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="{{game.windowsStore}}" target="_blank" class="md-primary" aria-label="{{game.windowsStore}}" ng-if="game.windowsStore">
+                            <span class="fa fa-lg fa-windows icon windows"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="{{game.steamStore}}" target="_blank" class="md-primary" aria-label="{{game.steamStore}}" ng-if="game.steamStore">
+                            <span class="fa fa-lg fa-steam icon steam"></span>
+                        </md-button>
+                        <md-button class="md-icon-button md-raised" ng-href="{{game.github}}" target="_blank" class="md-primary" aria-label="{{game.github}}" ng-if="game.github">
+                            <span class="fa fa-lg fa-github icon github"></span>
+                        </md-button>
+                    </p>
+                    <md-list-item ng-if="game.descriptionHTML">
+                        <div ng-bind-html="game.descriptionHTML" data-role="description">
+                        </div>
+                    </md-list-item>
+                    <md-list-item ng-if="game.version" data-role="version">
+                        Version: {{game.version}}&nbsp;<span ng-if="game.status">({{game.status}})</span>
+                    </md-list-item>
+                    <md-list-item>
+                        <div data-role="tags">
+                            <span class="tag" ng-repeat="tag in game.tags track by $index">{{tag}} <span class="fa fa-remove clickable" ng-if="canRemoveTags" ng-click="removeTag(tag)"></span></span>
+                            <span class="text-primary nocaps clickable nowrap" ng-show="canAddTags" ng-click="showTagPane=!showTagPane">{{showTagPane? 'Close Tag Pane' : '+ Tag'}}</span>
+                        </div>
+                    </md-list-item>
+                    <md-content ng-show="showTagPane">
+                        <md-content layout-padding>
+                            <div class="tagGroup" ng-repeat="(name, group) in tags">
+                                <div class="heading">{{name}}</div>
+                                <div class="clearfix">
+                                    <span class="clickable tag {{tag}}" ng-repeat="tag in group" ng-click="addTag(tag)" ng-hide="tagUsed(tag)">{{tag}}</span>
+                                </div>
+                            </div>
+                        </md-content>
+                    </md-content>
+                    
+                    <md-list-item ng-if="game.rating && game.reviews.length>0">
+                        <p>Average of {{game.reviews.length}} review{{game.reviews.length>1?'s':''}}:</p>
+                        <p>
+                            {{game.rating | number:1}} <span class="fa-star fa fa-lg text-primary"></span>
+                        </p>
+                    </md-list-item>
+
+                    
+                    
+                    <md-list-item ng-if="game.developer">
+                        <a ng-href="/creator/{{game.developer}}">{{game.developer}}</a>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+            <md-divider></md-divider>
+            <md-content layout-align="start center" layout="row" class="myReview md-padding" ng-if="authentication.user">
+                <md-divider></md-divider>
+                <div flex>
+                    <div ng-show="myReview" layout="row" layout-align="space-between center">
+                        <div class="review">
+                            <div class="score">{{myReview.score}}</div>
+                        </div>
+                        <div flex>
+                            <div class="text-primary clickable" ng-click="openReviewDetails($event, myReview)">{{myReview.name || 'Your Review'}} submitted <span am-time-ago="myReview.created"></span></div>
+                            <div>
+                                <span ng-repeat="n in [1, 2, 3, 4, 5]">
+                                    <span class="fa" ng-class="{'fa-star':myReview.score>=n,'fa-star-half-o':myReview.score>n && myReview.score<n-1,'fa-star-o':myReview.score < n}">
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <md-button aria-label="Edit it" ng-click="editMyReview($event, myReview)" class="md-primary">edit</md-button>
+                        </div>
+                    </div>
+                    <div ng-hide="myReview">
+                        <div style="text-align:center">Please tell us what you think!</div>
+                        <div layout="row" layout-align="center center" ng-mouseOut="setSelectedScore(0)" class="ratingStars">
+                            <span ng-repeat="n in [1, 2, 3, 4, 5]">
+                                <span class="fa fa-lg" ng-class="{'fa-star':selectedScore>=n,'fa-star-half-o':selectedScore>=n && selectedScore<n-1,'fa-star-o':selectedScore<n}" ng-click="openReviewWriter($event, n)" ng-mouseEnter="setSelectedScore(n)">
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </md-content>
+            <md-divider></md-divider>
+            <md-content>
+                <div ng-show="reviews.length">
+                    <md-list>
+                        <md-list-item layout-align="start center" class="review" ng-class="{'mine':review.user._id === authentication.user._id}" ng-repeat="review in reviews | limitTo: maxReviewsDisplayed">
+                            <div class="score">{{review.score}}</div>
+                            <div style="line-height:normal">
+                                <span ng-click="openReviewDetails($event, review)" class="clickable">
+                                    <span class="text-primary">{{review.name}}</span> submitted <span class="item-created" am-time-ago="review.created" title="{{review.created}}"></span> by
+                                </span>
+                                <span class="item-author">
+                                    <a ng-href="/m/{{review.user.username}}">{{review.user.username}}</a>
+                                </span>
+                            </div>
+                        </md-list-item>
+                        <md-list-item layout-align="center start" ng-show="reviews.length > maxReviewsDisplayed">
+                            <md-button ng-click="increaseMaxReviews()" aria-label="Show More">Show More</md-button>
+                        </md-list-item>
+                    </md-list>
+                </div>
+                <h3 ng-hide="reviews.length || myReview">No Reviews... yet.</h3>
+            </md-content>
+            <md-content ng-if="canViewHistory" class="md-padding" style="font-size: 75%">
+                <md-divider></md-divider>
+                <p><b>Logo History</b></p>
+                <div ng-repeat="hist in game.logoHistory">
+                    <p>{{hist.prev}} changed to <b>{{hist.logo}}</b></p>
+                    <small>{{hist.date | date:'short'}} - {{hist.username}}</small>
+                </div>
+            </md-content>
+            <div flex></div>
+        </md-content>
+        <md-content layout="column" flex="100" flex-sm="50" flex-gt-sm="60">
+            <div class="md-title md-padding">Screenshots</div>
+            <md-progress-linear md-mode="indeterminate" ng-show="uploading"></md-progress-linear>
+            <div class="clearfix thumbnails" style="margin-bottom: 20px">
+                <div ng-repeat="img in game.screenshots | limitTo:maxScreenshots" class="clickable" ng-style="{'background-image':'url(/uploads/{{img.filename}}?thumb=192x192)','background-size':'cover'}" ng-click="openImage($event, $index, editAlbum)">
+                    <div class="thumbnail-footer" ng-if="canDeleteScreenshots">
+                        <md-button class="md-warn md-icon-button" ng-click="deleteImage($event, img)" aria-label="Delete Screenshot">
+                            <md-icon class="fa" md-font-icon="fa-trash"></md-icon>
+                        </md-button>
+                    </div>
+                </div>
+                <div ng-show="maxScreenshots < game.screenshots.length" ng-click="showMoreScreenshots()" class="clickable">
+                    <h3 style="text-align: center">Show more</h3>
+                </div>
+                <div ng-show="canAddScreenshots" layout="row" layout-align="center center" ngf-allow-dir="true" class="drop-box clickable" ngf-drop ngf-select ng-model="uploads.files" ngf-max-size="{{maxfilesize}}" ngf-drag-over-class="{accept:'dragover',reject:'rejectDrag'}" ngf-multiple="true" ngf-accept="'image/*'">
+                    Click or Drag and drop Images here to upload (Max 2500Kb)
+                </div>
+                <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+            </div>
+            <div ng-show="game.screenshots.length == 0 && !canAddScreenshots">
+                <h2>No screenshots uploaded... yet</h2></div>
+            <md-divider></md-divider>
+            <md-content ng-if="game.youtube">
+                <div class="video-container">
+                    <iframe src="{{'https://www.youtube.com/embed/'+game.youtube}}" frameborder="0" width="560" height="315"></iframe>
+                </div>
+            </md-content>
+            <md-content ng-if="similarGames">
+                <div class="md-title md-padding">Similar Games</div>
+                <div class="gameTiles clearfix" style="margin: 20px 0px; padding-bottom: 30px">
+                    <game-tile game-id="game._id" ng-repeat="game in similarGames"></game-tile>
+                </div>
+            </md-content>
+            <md-divider></md-divider>
+            <md-content layout="column" md-dynamic-height>
+                <div layout="row" layout-align="start center" class="md-padding">
+                    <span class="md-title">Discussions</span>
+                    <span flex></span>
+                    <md-button class="md-raised md-accent" aria-label="Start a discussion" ng-click="openDiscussionWriter()" ng-show="authentication.user">
+                        Start a Thread
+                    </md-button>
+                </div>
+                <div ng-show="loadingDiscussions" layout="column" layout-align="center center">
+                    <div>Loading Discussions...</div>
+                    <md-progress-circular class="md-hue-2" md-mode="indeterminate"></md-progress-circular>
+                </div>
+                <div ng-show="!loadingDiscussion && discussions.length">
+                    <div class="discussion-list" layout="column">
+                        <div class="item" ng-class="{'mine':discussion.user._id === authentication.user._id}" ng-repeat="discussion in discussions | limitTo: maxDiscussionsDisplayed">
+                            <a class="item-heading" ng-href="/discussions/{{discussion._id}}/{{discussion.slug}}">{{discussion.name}}</a>
+                            <div class="item-head">
+                                <span class="item-author"><a ng-href="/m/{{discussion.user.username}}">{{discussion.user.username}}</a></span>
+                                <span class="item-score">( <span class="item-score">{{discussion.liked - discussion.disliked}}</span> | <span class="item-liked">+{{discussion.liked}}</span> <span class="item-disliked">-{{discussion.disliked}}</span> )</span>
+                                <span class="item-created" am-time-ago="discussion.created" title="{{discussion.created}}"></span>
+                                <span class="item-comments">{{discussion.numComments}} <span class="fa fa-comment md-primary"></span></span>
+                            </div>
+                        </div>
+                        <md-button aria-label="Show More" class="item" ng-show="discussions.length > maxDiscussionsDisplayed" ng-click="increaseMaxDiscussions()">
+                            Show More
+                        </md-button>
+                    </div>
+                </div>
+                <div ng-hide="loadingDiscussions || discussions.length" style="text-align:center">No Discussions... yet.</civ>
+            </md-content>
+            <div style="width: 100%; height: 300px; position: relative; margin-top:20px; overflow:hidden;">
+                <adsense ad-client="ca-pub-3539504993894756" ad-slot="3418347022" inline-style="display:block;width:100%;height:100%" ad-format="auto"></adsense>
+            </div>
+        </md-content>
+    </md-content>
+</md-content>

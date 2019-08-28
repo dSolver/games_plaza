@@ -1,0 +1,146 @@
+<md-content ng-if="discussion" layout-xs="column" layout-sm="column" layout="row">
+    <md-content flex-xs="100" flex-sm="100" flex>
+        <h3>{{discussion.name}}</h3>
+        <div ng-hide>
+            <md-button class="md-primary nocaps" ng-click="toggleFollow()">
+                <span class="fa" ng-class="{'fa-heart-o':!isFollowed,'fa-heart':isFollowed}"></span> Keep me updated</md-button>
+        </div>
+        <md-content>
+            submitted <span am-time-ago="discussion.created" title="{{discussion.created}}"></span> by <a ng-href="/m/{{discussion.user.username}}">{{discussion.user.username}}</a>
+            <span class="scoreInfo">( <span class="item-score">{{discussion.liked - discussion.disliked}}</span> | <span class="item-liked">+{{discussion.liked}}</span> <span class="item-disliked">-{{discussion.disliked}}</span> )</span>
+        </md-content>
+        <md-content class="discussion-content" ng-if="discussion.contentHTML" ng-bind-html="discussion.contentHTML" ng-hide="discussion.isEditing">
+        </md-content>
+        <md-content ng-show="discussion.isEditing">
+            <md-input-container>
+                <label>Content</label>
+                <textarea ng-model="discussion.content">
+                </textarea>
+            </md-input-container>
+            <md-divider></md-divider>
+            <div layout layout-align="end center">
+                <md-button class="md-primary" ng-click="discussion.isEditing=false">Cancel</md-button>
+                <md-button class="md-primary" ng-click="updateDiscussion()">Save</md-button>
+            </div>
+            
+        </md-content>
+        <md-content style="text-align:right" ng-if="authentication.user" ng-hide="discussion.isEditing">
+            <span layout="row">
+            <md-button class="md-icon-button md-mini" ng-click="voteDiscussion(discussion, 1)" ng-class="{'md-primary':discussion.myVote==1}" aria-label="Like">
+                <md-icon class="fa fa-lg" md-font-icon="fa-arrow-up"></md-icon>
+                <md-tooltip md-autohide="true">
+                    Like
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-icon-button md-mini" ng-click="voteDiscussion(discussion, -1)" ng-class="{'md-primary':discussion.myVote==-1}" aria-label="Dislike">
+                <md-icon class="fa fa-lg" md-font-icon="fa-arrow-down"></md-icon>
+                <md-tooltip md-autohide="true">
+                    Dislike
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-icon-button md-warn md-mini" ng-click="discussion.showReport=!discussion.showReport" ng-if="authentication.user" aria-label="Report">
+                <md-icon class="fa fa-lg" md-font-icon="fa-exclamation-triangle"></md-icon>
+                <md-tooltip md-autohide="true">
+                  Report
+                </md-tooltip>
+            </md-button>
+            <span flex></span>
+            <md-button class="md-icon-button md-primary md-mini" ng-click="discussion.isEditing=true" ng-if="discussion.user._id === authentication.user._id" aria-label="Edit">
+                <md-icon class="fa fa-lg" md-font-icon="fa-edit"></md-icon>
+            </md-button>
+            <md-button class="md-icon-button md-warn md-mini" ng-click="removeDiscussion(discussion)" ng-if="discussion.user._id === authentication.user._id || authentication.user.roles.indexOf('admin') >= 0" aria-label="Delete">
+                <md-icon class="fa fa-lg" md-font-icon="fa-trash"></md-icon>
+            </md-button>
+            </span>
+        </md-content>
+        <md-content ng-show="discussion.showReport" class="report-ui">
+            Why are you reporting this?
+            <md-radio-group ng-model="discussion.report">
+                <md-radio-button value='Spam'>Spam</md-radio-button>
+                <md-radio-button value='Vote Manipulation'>Vote Manipulation</md-radio-button>
+                <md-radio-button value='Personal Information'>Personal Information</md-radio-button>
+                <md-radio-button value='Troll'>Troll</md-radio-button>
+                <md-radio-button value='Harrassment'>Harrassment</md-radio-button>
+            </md-radio-group>
+            <md-button ng-disabled="!discussion.report" ng-click="submitReport(discussion)">Submit</md-button>
+            <md-button ng-click="discussion.showReport=false">Cancel</md-button>
+        </md-content>
+        <md-divider></md-divider>
+        <md-content layout="column">
+            <h5>{{discussion.comments.length}} Response{{discussion.comments.length == 1? '' : 's'}}</h5>
+            <md-input-container ng-if="authentication.user">
+                <label>Reply to discussion</label>
+                <textarea ng-model="comment.content">
+                </textarea>
+            </md-input-container>
+            <div>
+                <md-button ng-click="submitDiscussionComment()" class="md-raised" aria-label="Save" ng-show="authentication.user">Reply</md-button>
+            </div>
+            <div class="comments md-padding">
+                <div class="comment" ng-repeat="comment in discussion.comments track by $index">
+                    <div class="item-head">
+                        <span class="item-author"><a ng-href="/m/{{comment.user.username}}">{{comment.user.username}}</a></span>
+                        <span class="item-score">( {{comment.liked - comment.disliked}} | <span class="item-liked">+{{comment.liked}}</span>, <span class="item-disliked">-{{comment.disliked}}</span> )</span>
+                        <span class="item-created" am-time-ago="comment.created" title="{{comment.created}}"></span>
+                    </div>
+                    <div class="comment-content" ng-bind-html="comment.contentHTML" ng-hide="!comment.override && comment.liked-comment.disliked < -5"></div>
+                    <div class="comment-content" ng-show="!comment.override && comment.liked-comment.disliked < -5">
+                        Comment below threshold
+                        <md-button ng-click="comment.override=true" aria-label="show it anyway">Show it anyway</md-button>
+                    </div>
+                    <div class="comment-foot" ng-if="authentication.user" layout="row">
+                        <md-button class="md-icon-button md-mini" ng-click="voteComment(comment, 1)" ng-class="{'md-primary':comment.myVote==1}" aria-label="Like">
+                            <md-icon class="fa fa-lg" md-font-icon="fa-arrow-up"></md-icon>
+                            <md-tooltip md-autohide="true">
+                                Like
+                            </md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button md-mini" ng-click="voteComment(comment, -1)" ng-class="{'md-primary':comment.myVote==-1}" aria-label="Dislike">
+                            <md-icon class="fa fa-lg" md-font-icon="fa-arrow-down"></md-icon>
+                            <md-tooltip md-autohide="true">
+                                Dislike
+                            </md-tooltip>
+                        </md-button>
+                        <md-button ng-click="comment.showReport=!comment.showReport" class="md-icon-button md-warn md-mini" ng-disabled="comment.reported" aria-label="Report">
+                            <md-icon md-font-icon="fa-exclamation-triangle" class="fa fa-lg"></md-icon>
+                            <md-tooltip md-autohide="true">
+                                Report
+                            </md-tooltip>
+                        </md-button>
+                        <span flex></span>
+                    </div>
+                    <md-content ng-show="comment.showReport" class="report-ui">
+                        Why are you reporting this?
+                        <md-radio-group ng-model="comment.report">
+                            <md-radio-button value='Spam'>Spam</md-radio-button>
+                            <md-radio-button value='Vote Manipulation'>Vote Manipulation</md-radio-button>
+                            <md-radio-button value='Personal Information'>Personal Information</md-radio-button>
+                            <md-radio-button value='Troll'>Troll</md-radio-button>
+                            <md-radio-button value='Harrassment'>Harrassment</md-radio-button>
+                        </md-radio-group>
+                        <md-button ng-disabled="!comment.report" ng-click="submitReport(comment)" aria-label="Submit">Submit</md-button>
+                        <md-button ng-click="comment.showReport=false" aria-label="Cancel">Cancel</md-button>
+                    </md-content>
+                </div>
+            </div>
+        </md-content>
+    </md-content>
+    <md-content flex-xs="100" flex-sm="100" style="width: 380px" flex-order="2" flex-order-xs="-1" flex-order-sm="-1">
+        <md-content ng-if="attachType" ng-switch="attachType">
+            <div ng-switch-when="games">
+                <a ng-href="/games/{{context.slug}}">
+                    <img ng-src="/uploads/{{context.logo}}?thumb=320x225" ng-if="context.logo">
+                </a>
+            </div>
+            <p>
+                {{context.name}}
+            </p>
+            <div style="margin: 50px 0" hide-sm>
+                <adsense ad-client="ca-pub-3539504993894756" ad-slot="6476171425" inline-style="display:inline-block;width:100%;height:300px" ad-format="auto"></adsense>
+            </div>
+        </md-content>
+    </md-content>
+</md-content>
+<md-content ng-hide="discussion" layout layout-align="center center">
+    <h1>This is not the discussion you're looking for</h1>
+</md-content>

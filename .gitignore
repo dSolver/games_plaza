@@ -1,0 +1,12 @@
+.DS_Store
+.nodemonignore
+.sass-cache/
+npm-debug.log
+node_modules/
+public/lib/*
+public/uploads
+app/tests/coverage/
+.bower-*/
+.idea/
+./starter.sh
+starter.sh

@@ -1,0 +1,20 @@
+<div ng-controller="AdminController" ng-init="getUsers()">
+	<h3>Users - {{users.length}}</h3>
+	<md-content class="md-padding">
+		<div ng-repeat="user in users track by user._id" layout="row" layout-align="start center">
+			<span style="width: 200px">{{user.username}}</span>
+			<span layout="row">
+				<span ng-repeat="role in user.roleObj">
+					<md-checkbox ng-model="role.on">{{role.role}}</md-checkbox>
+				</span>
+			</span>
+			<span>
+				<md-button ng-click="updateUser(user)">Update</md-button>
+				<span class="fa fa-check" ng-show="user.updateSuccess"></span>
+			</span>
+
+		</div>
+
+	</md-content>
+
+</div>

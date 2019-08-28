@@ -1,0 +1,41 @@
+<md-dialog class="fullscreen-dialog">
+    <md-toolbar class="md-primary">
+        <div class="md-toolbar-tools">
+            <h3>Start Discussion</h3>
+            <span flex></span>
+            <md-button ng-click="closeDialog()" class="md-icon-button" aria-label="Close">
+                <md-icon class="fa fa-lg" md-font-icon="fa-times"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <md-content layout="column">
+            <p>
+                Please keep in mind some rules for comments and discussions:
+                <ol>
+                    <li><strong>Be nice</strong> - no death threats, witch hunts, bigotry, flaming, trolling, name-calling, etc.</li>
+                    <li><strong>Absolutely no referral links</strong> - they will be removed and you will be reported</li>
+                    <li><strong>Spam will be removed</strong> - just... don't.</li>
+                </ol>
+            </p>
+            <md-input-container>
+                <label>Title (required)</label>
+                <input type="text" data-ng-model="discussion.name"placeholder="Discussion Title" required>
+                <div ng-messages="discussion.$error">
+                    <div ng-message="name required">This is required.</div>
+                </div>
+            </md-input-container>
+            <md-input-container>
+                <label>Content</label>
+                <textarea ng-model="discussion.content"></textarea>
+            </md-input-container>
+        </md-content>
+    </md-dialog-content>
+    <div class="md-actions" layout="row" layout-align="bottom right">
+        <md-button ng-click="closeDialog()" class="md-primary" aria-label="Cancel">Cancel</md-button>
+        <md-button ng-click="createDiscussion()" class="md-primary" ng-disabled="!discussion.name" aria-label="Submit">Submit</md-button>
+        <div data-ng-show="error" class="text-danger">
+            <strong data-ng-bind="error"></strong>
+        </div>
+    </div>
+</md-dialog>

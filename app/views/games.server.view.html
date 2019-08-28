@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title >Incremental Games Plaza - Games Directory</title>
+        <!-- General META -->
+        <meta charset="utf-8">
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <!-- Semantic META -->
+        <meta name="keywords" content="Incremental, Games, Idle, Plaza, Clicker, Reddit, /r/incremental_games, dSolver, Discussion, Community, Reviews, Guides, Articles, Showcase, List, Curate">
+        <meta name="description" content="A community for fans of incremental and idle games to share reviews, have discussions, and curate lists of games">
+        
+        </head>
+        {% for cssFile in cssFiles %}
+        <link rel="stylesheet" href="{{cssFile}}">
+        {% endfor %}
+        
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-3539504993894756",
+            enable_page_level_ads: true
+        });
+        </script>
+    
+    </head>
+    <body>
+        
+            
+    {% block content %}
+        <h3>Games Directory</h3>
+        <ul>
+    	{% for game in games %}
+        	<li><a href="/games/{{game.slug}}">{{ game.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endblock %}
+
+    </body>
+
+</html>

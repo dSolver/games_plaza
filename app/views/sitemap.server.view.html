@@ -1,0 +1,23 @@
+{% block content %}
+<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+    	<loc>https://plaza.dsolver.ca</loc>
+    </url>
+    <url>
+    	<loc>https://plaza.dsolver.ca/terms</loc>
+    </url>
+   	<url>
+    	<loc>https://plaza.dsolver.ca/games</loc>
+    </url>
+    <url>
+    	<loc>https://plaza.dsolver.ca/playlists</loc>
+    </url>
+	{% for game in games %}
+	   <url>
+	       <loc>https://plaza.dsolver.ca/games/{{game.slug}}</loc>
+	       <changefreq>weekly</changefreq>
+	   </url>
+    {% endfor %}
+    </urlset>
+{% endblock %}

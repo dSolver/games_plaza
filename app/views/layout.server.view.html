@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" ng-app="workshop"  ng-controller="CoreController">
+<head>
+    <title ng-bind="Page.title">Incremental Games Plaza</title>
+    <!-- General META -->
+    <meta name="fragment" content="!" />
+    <meta charset="utf-8">
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+     {% raw %}
+    <!-- Semantic META -->
+    <meta name="description" ng-if="!Page.description" content="The Plaza is a community for categorizing and listing incremental, idle, and clicker games. Find the best android, ios, and web games with The Plaza">
+    <!-- Twitter META -->
+    <meta name="twitter:title" content="Incremental Games Plaza">
+    <meta name="twitter:description" content="The Plaza is a community for categorizing and listing incremental, idle, and clicker games. Find the best android, ios, and web games with The Plaza">
+    <!-- OG META -->
+    <meta property="og:title" content="Incremental Games Plaza" />
+    {% endraw %}
+    <base href="/">
+    <!-- Fav Icon -->
+    <link href="/modules/core/img/brand/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <!--Application CSS Files-->
+    {% for cssFile in cssFiles %}
+    <link rel="stylesheet" href="{{cssFile}}">
+    {% endfor %}
+    
+    <!--Application JavaScript Files-->
+    {% for jsFile in jsFiles %}
+    <script type="text/javascript" src="{{jsFile}}"></script>
+    {% endfor %}
+    
+
+</head>
+{% raw %}
+<body ng-class="{'lounge-opened': $root.openLounge}">
+    <div class="head-toolbar" layout="row" layout-align="start center">
+        <h3 ui-sref="home" class="clickable titletext">The Plaza</h3>
+
+        <span flex></span>
+        <span>
+            <md-button class="md-icon-button autoWidth nocaps ng-cloak" aria-label="Incremental Games List" ng-href="/games">
+                <span class="fa fa-gamepad"></span>
+                <span hide-xs>Games</span>
+            </md-button>
+        </span>
+        <span>
+            <md-button aria-label="My Playlists" ng-href="/playlists" class=" md-icon-button autoWidth nocaps ng-cloak">
+                <span class="fa fa-list"></span>
+                <span hide-xs>Playlists</span>
+            </md-button>
+        </span>
+        <span>
+        <md-button aria-label="Donate" ng-href="/donate" class="md-icon-button autoWidth nocaps ng-cloak">
+            <span class="fa fa-dollar"></span>
+            <span hide-xs>Donate</span>
+        </md-button>
+        </span>
+        <span class="userNotifications ng-cloak" ng-if="authentication.user">
+            <md-button class="md-icon-button" aria-label="Unread Notifications" ng-click="drawer.toggle()">
+                <span class="fa fa-bell-o" ng-class="{'md-warn':hasUnread,'md-primary':!hasUnread}"></span>
+            <md-tooltip>Your Notifications</md-tooltip>
+        </md-button>
+        </span>
+        <span ng-if="!authentication.user" class="ng-cloak">
+            <md-button class="md-icon-button autoWidth nocaps" aria-label="Login in with reddit" ng-href="/auth/reddit?redirect={{curPath}}" target="_self">
+            <span class="fa fa-user"></span>
+            <span hide-xs>Login / Signup</span>
+            </md-button>
+        </span>
+        <span ng-if="authentication.user" class="ng-cloak">
+            <md-menu>
+                <md-button aria-label="User menu" ng-click="$mdOpenMenu($event)" class="nocaps md-icon-button autoWidth">
+                    <span class="fa fa-user"></span>
+                    <span hide-xs ng-bind="authentication.user.username"></span>
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item> 
+                        <md-button aria-label="My Profile" ng-href="/m/{{authentication.user.username}}">My Profile</md-button>
+                    </md-menu-item>
+                    <md-menu-divider></md-menu-divider>
+                    <md-menu-item>
+                        <md-button aria-label="Sign out" ng-href="/auth/signout" target="_self">Sign Out</md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+        </span>
+    </div>
+    <md-content layout="column" layout-fill id="baseLayer"  ng-class="{'small-device': issm(), 'ready': true}">
+        <md-content>
+            {% endraw %} 
+            {% block content %}{% endblock %}
+            {% raw %}
+            <lounge ng-show="$root.openLounge"></lounge>
+        </md-content>
+        <md-sidenav class="md-sidenav-right md-whiteframe-4dp notification-drawer ng-cloak" md-component-id="notificationDrawer">
+            <md-toolbar class="md-primary">
+                <div class="md-toolbar-tools">
+                    <span>Notifications</span><span flex></span>
+                    <md-button class="md-icon-button" ng-click="getNotifications()">
+                        <span class="fa fa-refresh" ng-class="{'fa-spin':drawer.busy}"></span>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <md-content>
+                <div ng-repeat="notification in notifications track by notification._id" ng-class="{'unread':!notification.read}" ng-click="readNotification(notification)" class="notification-item">
+                    <div>
+                        <div ng-switch="notification.notifType">
+                            <div ng-switch-when="New Comment">
+                                <a ng-href="/discussions/{{notification.objid}}/{{notification.slug}}" ng-bind="notification.notifType+' on '+notification.title"></a>
+                            </div>
+                            <div ng-switch-when="New Discussion">
+                                <a ng-href="/discussions/{{notification.objid}}/{{notification.slug}}" ng-bind="notification.notifType+' on '+notification.title"></a>
+                            </div>
+                            <div ng-switch-when="New Review">
+                                <a ng-href="/games/{{notification.objid}}"  ng-bind="notification.notifType+' on '+notification.title">
+                                </a>
+                            </div>
+                        </div>
+                        <small>
+                        <span ng-bind="notification.creator.username" ng-if="notification.count == 1"></span>
+                        <span am-time-ago="notification.created"></span>
+                    </small>
+                    </div>
+                </div>
+                <md-button ng-click="drawer.toggle()" class="md-primary">
+                    Close
+                </md-button>
+            </md-content>
+            
+        </md-sidenav>
+
+
+        <md-button arialabel="Lounge" ng-click="$root.openLounge = !$root.openLounge" class="md-fab md-mini ng-cloak lounge-fab" ng-class="{'depressed': $root.openLounge}">
+            <span class="fa fa-glass"></span>
+        </md-button>
+    </md-content>
+    <footer>
+        <div>
+            <p class="links">
+                <a ui-sref="about">about</a>
+                <a ui-sref="privacy">privacy</a>
+                <a ui-sref="terms">terms</a>
+                <a href="https://www.reddit.com/r/games_plaza" target="_blank">subreddit</a>
+            </p>
+            <p>
+                <small>
+                Incremental Games Plaza &copy; 2016 Persera Software Inc.
+                </small>
+            </p>
+        </div>
+    </footer>
+    {% endraw %}
+
+    <!--Embedding The User Object-->
+    <script type="text/javascript">
+    var user = {{
+            user | json | safe
+        }};
+    </script>
+    <script type="text/javascript">
+    var games = {{
+            games | json | safe
+        }};
+    </script>
+    
+    <script type="text/javascript" src="config.js"></script>
+    
+    <script type="text/javascript" src="application.js"></script>
+    <script type="text/javascript" src="highlighter/highlight.pack.js"></script>
+    
+    <script type="text/javascript" src="modules/articles/articles.client.module.js"></script>
+    <script type="text/javascript" src="modules/comments/comments.client.module.js"></script>
+    <script type="text/javascript" src="modules/core/core.client.module.js"></script>
+    <script type="text/javascript" src="modules/discussions/discussions.client.module.js"></script>
+    <script type="text/javascript" src="modules/fileuploads/fileuploads.client.module.js"></script>
+    <script type="text/javascript" src="modules/games/games.client.module.js"></script>
+    <script type="text/javascript" src="modules/playlists/playlists.client.module.js"></script>
+    <script type="text/javascript" src="modules/reviews/reviews.client.module.js"></script>
+    <script type="text/javascript" src="modules/users/users.client.module.js"></script>
+
+    <script type="text/javascript" src="modules/users/services/users.client.service.js"></script>
+    <script type="text/javascript" src="modules/users/services/authentication.client.service.js"></script>
+    <script type="text/javascript" src="modules/users/services/profiles.client.services.js"></script>
+    <script type="text/javascript" src="modules/playlists/services/playlists.client.service.js"></script>
+    <script type="text/javascript" src="modules/reviews/services/reviews.client.service.js"></script>
+    <script type="text/javascript" src="modules/articles/services/articles.client.service.js"></script>
+    <script type="text/javascript" src="modules/comments/services/comments.client.service.js"></script>
+    <script type="text/javascript" src="modules/core/services/core.client.service.js"></script>
+    <script type="text/javascript" src="modules/core/services/page.client.service.js"></script>    
+    <script type="text/javascript" src="modules/core/services/subreddit.client.service.js"></script>    
+    <script type="text/javascript" src="modules/discussions/services/discussions.client.service.js"></script>    
+    <script type="text/javascript" src="modules/fileuploads/services/fileuploads.client.service.js"></script>
+    <script type="text/javascript" src="modules/games/services/games.client.service.js"></script>    
+    <script type="text/javascript" src="modules/games/services/playground.client.service.js"></script>
+    <script type="text/javascript" src="modules/playlists/services/playlistgames.client.service.js"></script>
+    
+    <script type="text/javascript" src="modules/articles/controllers/articles.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/comments/controllers/comments.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/core/controllers/admin.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/core/controllers/core.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/core/controllers/home.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/core/directives/silly.js"></script>
+    
+    <script type="text/javascript" src="modules/core/directives/subreddit.js"></script>
+
+    <script type="text/javascript" src="modules/discussions/controllers/discussions.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/fileuploads/controllers/fileuploads.client.controller.js"></script>
+
+    <script type="text/javascript" src="modules/games/controllers/list-games.client.controller.js"></script>
+
+    <script type="text/javascript" src="modules/games/controllers/games.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/games/controllers/playground.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/games/directives/gamesearch.component.js"></script>
+    
+    <script type="text/javascript" src="modules/games/directives/gamesummary.component.js"></script>
+    
+    <script type="text/javascript" src="modules/games/directives/gametile.component.js"></script>
+    
+    <script type="text/javascript" src="modules/games/directives/lounge.component.js"></script>
+    
+    <script type="text/javascript" src="modules/games/directives/tag.component.js"></script>
+
+    <script type="text/javascript" src="modules/playlists/controllers/playlists.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/playlists/directives/playlist-editor.client.directive.js"></script>
+    
+    <script type="text/javascript" src="modules/reviews/controllers/reviews.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/users/config/users.client.config.js"></script>
+    
+    <script type="text/javascript" src="modules/users/controllers/authentication.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/users/controllers/password.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/users/controllers/profile.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/users/controllers/settings.client.controller.js"></script>
+    
+    <script type="text/javascript" src="modules/playlists/config/playlists.client.routes.js"></script>
+    
+    <script type="text/javascript" src="modules/games/config/games.client.routes.js"></script>
+    
+    <script type="text/javascript" src="modules/fileuploads/config/fileuploads.client.routes.js"></script>
+    
+    <script type="text/javascript" src="modules/discussions/config/discussions.client.routes.js"></script>
+
+    <script type="text/javascript" src="modules/core/config/core.client.routes.js"></script>
+    
+    <script type="text/javascript" src="modules/articles/config/articles.client.routes.js"></script>
+    
+    <script type="text/javascript" src="modules/comments/config/comments.client.routes.js"></script>
+
+    <script type="text/javascript" src="modules/users/config/users.client.routes.js"></script>
+
+    <script type="text/javascript" src="modules/reviews/config/reviews.client.routes.js"></script>
+
+
+
+    <script type="text/javascript">
+         (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        window.ga('create', 'UA-12428009-12', 'auto');
+        window.ga('send', 'pageview');
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+
+<h3>Edit {{discussion.name}}</h3>
+    <md-content layout="column">
+        <md-input-container>
+            <label>Content</label>
+            <textarea ng-model="discussion.content"></textarea>
+        </md-input-container>
+    </md-content>
+</md-dialog-content>
+<div class="md-actions" layout="row" layout-align="bottom right">
+    <md-button ng-click="update()" aria-label="Submit">Submit</md-button>
+    <div data-ng-show="error" class="text-danger">
+        <strong data-ng-bind="error"></strong>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+<div class="breadcrumb" ng-if="attachType=='games'" layout="row" layout-align="start center"><md-button aria-label="{{context.name}}" ng-href="/games/{{context.slug}}">{{context.name}}</md-button> <span>&gt;</span> <md-button aria-label="{{discussion.name}}">{{discussion.name}}</md-button>
+</div> 
+<md-content class="md-padding" data-ng-init="findOne()">
+    
+    <ng-include src="'/modules/discussions/views/discussion-view.html'"></ng-include>
+</md-contentt>

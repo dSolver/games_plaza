@@ -1,0 +1,77 @@
+<md-content>
+    <a href="https://store.steampowered.com/app/734980/Prosperity/" target="new" class="hero-2">
+        Prosperity now on Steam Early Access
+    </a>
+</md-content>
+<md-content class="md-padding" ng-controller="PlaylistsController">
+    <h1>Playlists</h1>
+    <div layout-gt-sm="row" layout="column" layout-align="start start">
+        <md-content flex="100" flex-order="1" flex-gt-sm="25" flex-order-gt-sm="3" class="md-padding md-margin">
+            <p>
+                You can make playlists to group games together however you like, and share with other users. Think of it as a mix tape you can recommend to people.
+            </p>
+            <p>
+                Playlists are private (only you can see) until you publish them for others to see. Create and add games to your playlist through the <a href="/games">Games List</a>
+            </p>
+            <p>&nbsp;</p>
+            <adsense ad-client="ca-pub-3539504993894756" ad-slot="3418347022" inline-style="display:inline-block;width:100%;height:300px" ad-format="auto"></adsense>
+        </md-content>
+        <md-content flex="100" flex-order="2" flex-gt-sm="75" flex-order-gt-sm="2">
+            <md-tabs md-dynamic-height>
+                <md-tab label="Public Playlists">
+                    <div class="list-group md-padding" data-ng-init="find()">
+                        <div data-ng-repeat="playlist in playlists track by playlist._id" class="playlist-tile" layout="column"  layout-padding>
+                            <div layout="row" layout-align="space-between center">
+                                <a ng-href="/playlists/{{playlist._id}}">
+                                    {{playlist.name || 'Untitled Playlist'}}
+                                </a>
+                                <div>
+                                    {{playlist.games.length}} games
+                                </div>
+                            </div>
+                            <div>
+                                Updated <span am-time-ago="playlist.lastModified" title="{{playlist.lastModified | date:'medium'}}"></span>
+                            </div>
+
+                            <a href="/m/{{playlist.user.username}}">{{playlist.user.username}}</a>
+                            
+                        </div>
+                        <div ng-if="!playlists.$resolved">
+                            <md-progress-circular></md-progress-circular>
+                        </div>
+                        <div class="alert alert-warning text-center" data-ng-hide="!playlists.$resolved || playlists.length">
+                            No Playlists yet
+                        </div>
+                    </div>
+                </md-tab>
+                <md-tab label="My Playlists" ng-if="authentication.user">
+                    <div class="md-padding clearfix" data-ng-init="findMine()">
+                        <div ng-repeat="playlist in myPlaylists track by playlist._id" class="playlist-tile" layout="column" layout-padding>
+                            <div layout="row" layout-align="space-between center">
+                                <a ng-href="/playlists/{{playlist._id}}">
+                                    {{playlist.name || 'Untitled Playlist'}}
+                                </a>
+                                <span>{{playlist.games.length}} games</span>
+                                <span ng-if="playlist.published">Public</span>
+                            </div>
+                            <div layout="row" layout-align="start center">
+                                <small class="list-group-item-text">
+                                    Created <span am-time-ago="playlist.created" title="{{playlist.created | date:'medium'}}"></span> <br>
+                                    Last Modified <span am-time-ago="playlist.lastModified" title="{{playlist.lastModified | date:'medium'}}"></span>
+                                </small>
+                                
+                                <span flex></span>
+                                <md-button class="md-icon-button md-warn" ng-click="remove($event, playlist)">
+                                    <span class="fa fa-trash"></span>
+                                </md-button>
+                            </div>
+                        </div>
+                        <div ng-if="!myPlaylists.$resolved">
+                            <md-progress-circular></md-progress-circular>
+                        </div>
+                    </div>
+                </md-tab>
+            </md-tabs>
+        </md-content>
+    </div>
+</md-content>

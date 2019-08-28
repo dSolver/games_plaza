@@ -1,0 +1,98 @@
+<md-content class="fullheight">
+    <div class="fullheight">
+        <md-tabs class="loungeTabs" layout-fill md-autoselect="true">
+            <md-tab label="Lobby">
+                <div layout="row" layout-align="start center">
+                    <h3>{{$ctrl.playableGames.length}} Games</h3>
+                    <md-input-container>
+                        <md-select ng-model="$ctrl.sortBy" ng-change="$ctrl.onSortChange()">
+                            <md-option ng-repeat="opt in $ctrl.sortOpts track by $index" ng-value="opt">{{opt}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <md-content layout="column" layout-fill>
+                    <div class="gameTiles">
+                        <div class="gameTile tile clickable" ng-repeat="game in $ctrl.playableGames" ng-click="$ctrl.addTab(game)" ng-style="{'background-image':game.logo ? 'url(/uploads/'+game.logo+'?thumb=228x128)':'url(/modules/core/img/plazabg.jpg?thumb=228x128)'}">
+                            <div class="tile-footer">
+                                <div layout="row" layout-align="space-between">
+                                    <a ui-sref="viewGame({gameId:game.slug})" target="_new" class="nowrap" style="width: calc(100% - 77px); overflow: hidden; display: block; text-overflow: ellipsis;" title="{{game.name}}">{{game.name}}</a>
+                                    <span flex></span>
+                                    <span class="nowrap spaced">
+                                        <span ng-if="game.rating">
+                                            <span class="fa fa-star"></span> {{game.rating | number:1}}
+                                        </span>
+                                        <span ng-if="game.liked">
+                                                <span class="fa fa-heart"></span> {{game.liked}}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="taglist">
+                                    <b>Tags:</b>
+                                    <span ng-repeat="tag in game.tags track by $index">{{tag}}{{$last ? '' : ', '}}</span>
+                                    <span ng-hide="game.tags.length > 0">No Tags Yet</span>
+                                </div>
+                                <div class="description">
+                                    {{game.shortDescription}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </md-content>
+            </md-tab>
+            <md-tab ng-repeat="game in $ctrl.openedGames track by game._id">
+                <md-tab-label>{{game.name}} <span class="fa fa-remove" ng-click="$ctrl.closeTab(game)"></span></md-tab-label>
+                <md-tab-body style="height: 100%">
+                    <md-content layout-fill layout="row" style="background: white">
+                        <iframe ng-src="{{game.src}}" flex>
+                        </iframe>
+                    </md-content>
+                </md-tab-body>
+            </md-tab>
+        </md-tabs>
+
+        <div class="chatlog" ng-hide="$ctrl.chatHidden" ng-if="$ctrl.canChat">
+            <div layout="row" style="background-color: rgba(0, 0, 0, 0.2)" layout-align="start center">
+                <span ng-click="$ctrl.chatMgr.toggleUsersDisplay()">
+                <span class="clickable fa fa-users" ng-class="{'md-primary':$ctrl.chatMgr.usersDisplayed}"></span>
+                <span>{{$ctrl.chatMgr.online.length}}</span>
+                </span>
+                <span flex></span>
+                <md-button class="md-icon-button md-primary" ng-click="$ctrl.hideChat()">
+                    <span class="fa fa-chevron-down"></span>
+                </md-button>
+            </div>
+            <div style="height: calc(100% - 40px);" layout="row" ng-class="{'showUsers':$ctrl.chatMgr.usersDisplayed}">
+                <ul class="list userslist">
+                    <li ng-repeat="username in $ctrl.chatMgr.online track by $index">{{username}}</li>
+                </ul>
+                <ul scroll-glue class="list messages">
+                    <li ng-repeat="msg in $ctrl.chatMgr.messages track by $index" ng-switch="msg.type">
+                        <span ng-switch-when="status">
+                            <span class="md-warn">{{msg.text}}</span>
+                        </span>
+                        <span ng-switch-when="message">
+                            <span>
+                                <span>[{{msg.created | date:'short'}}]</span>
+                            <span ng-class="{'self':msg.self}">{{msg.username}}</span>:
+                            </span>
+                            <span>
+                                {{msg.text}}
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div ng-if="!$ctrl.canChat">
+        Log in to use the live chat
+        </div>
+        <div class="chatPanel" layout="row" layout-align="start center" ng-if="$ctrl.canChat">
+            <form ng-submit="$ctrl.sendMessage()">
+                <input type="text" ng-model="$ctrl.messageText" class="fancy" placeholder="Say hi">
+                <md-button class="md-icon-button md-accent" ng-click="$ctrl.showChat()" ng-show="$ctrl.chatHidden">
+                    <span class="fa fa-chevron-up"></span>
+                </md-button>
+            </form>
+        </div>
+    </div>
+</md-content>

@@ -1,0 +1,17 @@
+<md-dialog data-class="discussion" class="fullscreen-dialog">
+    <md-toolbar class="md-primary">
+        <div class="md-toolbar-tools">
+            <h3>Discussion</h3>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-href="/discussions/{{discussion._id}}" target="_blank">
+                <md-icon class="fa fa-lg" md-font-icon="fa-external-link-square"></md-icon>
+            </md-button>
+        	<md-button class="md-icon-button" ng-click="closeDialog()" aria-label="Close Discussion">
+        		<md-icon class="fa fa-lg" md-font-icon="fa-times"></md-icon>
+        	</md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <ng-include src="'/modules/discussions/views/discussion-view.html'"></ng-include>
+    </md-dialog-content>
+</md-dialog>

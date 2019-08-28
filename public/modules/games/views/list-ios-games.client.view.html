@@ -1,0 +1,40 @@
+<md-content ng-init="findGames('iOS')" layout-padding>
+    <h1>Top iOS Games</h1>
+    <md-content layout="row" layout-xs="column">
+        <div flex="75" flex-xs="100">
+            <h3>{{games.length}} Games</h3>
+            <div class="gameTiles">
+                <a class="gameTile tile" ng-repeat="game in games track by game._id" ui-sref="viewGame({gameId:game.slug})" ng-style="{'background-image':game.logo ? 'url(/uploads/'+game.logo+'?thumb=228x128)':'url(/modules/core/img/plazabg.jpg?thumb=228x128)'}">
+                    <div class="tile-footer">
+                        <div layout="row" layout-align="space-between">
+                            <span class="nowrap" style="width: calc(100% - 77px); overflow: hidden; display: block; text-overflow: ellipsis;" title="{{game.name}}">{{game.name}}</span>
+                            <span flex></span>
+                            <span class="nowrap spaced">
+                        
+                        <span ng-if="game.rating">
+                                <span class="fa fa-star"></span> {{game.rating | number:1}}
+                            </span>
+                            <span ng-if="game.liked">
+                            <span class="fa fa-heart"></span> {{game.liked}}
+                            </span>
+                            </span>
+                        </div>
+                        <div class="taglist">
+                            <b>Tags:</b>
+                            <span ng-repeat="tag in game.tags track by $index">{{tag}}{{$last ? '' : ', '}}</span>
+                            <span ng-hide="game.tags.length > 0">No Tags Yet</span>
+                        </div>
+                        <div class="description">
+                            {{game.shortDescription}}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div flex="25" flex-xs="100">
+            <div style="margin: 50px 0" hide-xs>
+                <adsense ad-client="ca-pub-3539504993894756" ad-slot="6476171425" inline-style="display:inline-block;width:100%;height:300px" ad-format="auto"></adsense>
+            </div>
+        </div>
+    </md-content>
+</md-content>

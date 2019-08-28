@@ -1,0 +1,57 @@
+<md-content class="panel" ng-controller="ProfileController" ng-init="findUser()">
+    <div ng-if="profile" class="md-padding">
+        <div>
+            <div layout="row" layout-align="space-between center">
+                <div class="md-display-1" style="margin-right: 20px">{{profile.username}} </div>
+                <span>{{profile.tagline}}</span>
+                <span flex></span>
+                <md-button class="md-raised md-primary" ng-if="isCurrentUser" ng-click="openProfileEditor($event)">
+                    <span class="fa fa-edit"></span>
+                    <md-tooltip>Edit Profile</md-tooltip>
+                </md-button>
+            </div>
+        </div>
+        <div layout-gt-sm="row" layout="column" class="md-padding">
+            <div flex-gt-sm="25" flex="100">
+                <md-content class="panel md-padding md-margin">
+                    <div>Member since {{profile.created | date:short}}</div>
+                    <div>Games Rated: {{profile.reviewcount}}</div>
+                    <div>Total Points: {{profile.points}}</div>
+                </md-content>
+                <md-content class="md-padding panel md-margin" ng-bind-html="profile.introHTML"></md-content>
+            </div>
+            <div flex-gt-sm="75" flex="100">
+                <md-content class="panel md-margin" ng-if="gamesCreated.length">
+                    <div class="md-title md-margin"> Creator of {{gamesCreated.length}} Game{{gamesCreated.length > 1 ? 's':''}}</div>
+                    <div class="gameTiles clearfix" style="margin: 10px 0">
+                        <game-tile game-id="game._id"  ng-repeat="game in gamesCreated"></game-tile>
+                    </div>
+                </md-content>
+                <md-content class="panel md-margin" ng-if="playlistsPublished.length">
+                    <div class="md-title md-margin">
+                    {{playlistsPublished.length}} Playlist{{playlistsPublished.length > 1 ? 's':''}}
+                    </div>
+                    <div data-ng-repeat="playlist in playlistsPublished track by playlist._id" class="playlist-tile" layout="column" layout-padding>
+                        <div layout="row" layout-align="space-between center">
+                            <a ng-href="/playlists/{{playlist._id}}">
+                                {{playlist.name || 'Untitled Playlist'}}
+                            </a>
+                            <div ng-if="!playlist.published">
+                                [Private]
+                            </div>
+                            <div>
+                                {{playlist.games.length}} games
+                            </div>
+                        </div>
+                        <div>
+                            Updated <span am-time-ago="playlist.lastModified" title="{{playlist.lastModified | date:'medium'}}"></span>
+                        </div>
+                    </div>
+                </md-content>
+            </div>
+        </div>
+    </div>
+    <div ng-if="notfound">
+        This user was not found
+    </div>
+</md-content>

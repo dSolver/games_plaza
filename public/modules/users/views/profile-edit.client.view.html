@@ -1,0 +1,28 @@
+<md-dialog class="fullscreen-dialog">
+    <md-toolbar class="md-primary">
+        <div class="md-toolbar-tools">
+            <h3>Edit Profile</h3>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div layout="column">
+            <md-input-container>
+                <label>Tagline</label>
+                <input type="text" maxlength="80" ng-model="profile.tagline">
+            </md-input-container>
+            <md-input-container>
+                <label>Intro</label>
+                <textarea maxlength="1000" ng-model="profile.intro">
+                </textarea>
+            </md-input-container>
+        </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row" layout-align="bottom right">
+        <span data-ng-show="error" class="md-warn">
+            <strong data-ng-bind="error"></strong>
+        </span>
+        <span flex></span>
+        <md-button ng-click="update($event)" class="md-primary" aria-label="Update">Update</md-button>
+        <md-button ng-click="closeDialog()" aria-label="Cancel" class="md-primary">Cancel</md-button>
+    </div>
+</md-dialog>

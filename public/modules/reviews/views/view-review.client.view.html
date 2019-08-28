@@ -1,0 +1,43 @@
+<md-dialog>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h3>{{review.name}}</h3>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="closeDialog()">
+            	<md-icon class="fa fa-lg" md-font-icon="fa-times"></md-icon>
+        	</md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+    	<md-content layout-padding>
+    		<div layout="row" layout-align="center center">
+                <span ng-repeat="n in [1, 2, 3, 4, 5]">
+                    <span class="fa fa-lg text-primary" ng-class="{'fa-star':review.score>=n,'fa-star-half-o':review.score>=n && review.score<n-1,'fa-star-o':review.score<n}">
+                    </span>
+                </span>
+            </div>
+            <p>
+                Submitted <span am-time-ago="review.created" title="{{review.created}}"></span> by <span class="item-author"><a ng-href="/m/{{review.user.username}}">{{review.user.username}}</a></span>
+            </p>
+    	</md-content>
+        <md-content ng-bind-html="review.contentHTML" class="discussion-content" ng-if="review.contentHTML">
+            
+        </md-content>
+
+        <md-content layout-padding>
+        	<span layout="row">
+    			<md-button ng-click="openReviewEditor($event, review)" class="md-primary" ng-if="review.user._id === authentication.user._id">
+		        	<md-icon class="fa fa-lg" md-font-icon="fa-edit"></md-icon>
+		    	</md-button>
+		    	<md-button ng-click="removeReview(review)" class="md-warn" ng-if="review.user._id === authentication.user._id || authentication.user.roles.indexOf('admin') >= 0">
+		    		<md-icon class="fa fa-lg" md-font-icon="fa-trash"></md-icon>
+		    	</md-button>
+
+                <span flex></span>
+                <md-button ng-click="closeDialog()" class="md-primary md-raised">
+                    Close
+                </md-button>
+		    </span>
+    	</md-content>
+    </md-dialog-content>
+</md-dialog>

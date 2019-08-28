@@ -1,0 +1,33 @@
+{
+  "name": "workshop",
+  "version": "0.0.1",
+  "description": "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js",
+  "dependencies": {
+    "angular": "^1.5",
+    "angular-resource": "^1.2",
+    "angular-mocks": "^1.2",
+    "angular-cookies": "^1.2",
+    "angular-animate": "^1.2",
+    "angular-sanitize": "^1.2",
+    "angular-bootstrap": "~0.11.2",
+    "angular-ui-utils": "^0.1.1",
+    "angular-ui-router": "^0.2.11",
+    "angular-material": "^1.0.9",
+    "jquery": "~2.1.4",
+    "components-font-awesome": "~4.3.0",
+    "ng-file-upload": "~5.0.9",
+    "ng-file-upload-shim": "~5.0.9",
+    "quick-ngrepeat": "*",
+    "angular-messages": "~1.4.1",
+    "angular-carousel": "~0.3.12",
+    "moment": "~2.10.3",
+    "angular-moment": "~0.10.1",
+    "angular-google-adsense": "^0.4.5",
+    "es6-shim": "^0.35.1",
+    "angular-scroll-glue": "^2.0.7"
+  },
+  "resolutions": {
+    "angular": "^1.5",
+    "angular-animate": "^1.3.0 || >1.4.0-beta.0"
+  }
+}

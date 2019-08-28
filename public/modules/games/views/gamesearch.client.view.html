@@ -1,0 +1,25 @@
+<div>
+    <div layout="row" layout-wrap>
+        <input type="text" ng-model="$ctrl.search.keyword" ng-model-options="{debounce: 300}" placeholder="Search" class="fancy" ng-change="$ctrl.update()" flex="100">
+        <div layout="row" layout-align="start center" layout-align="end center" flex="100">
+            <md-button aria-label="Categories" class="md-icon-button autoWidth nocaps" ng-click="$ctrl.showCategories = !$ctrl.showCategories" ng-class="{'md-primary':$ctrl.showCategories}">
+                <span class="fa fa-tags"></span>
+                <span hide-xs>Tags</span>
+                <md-tooltip>Filter by tags</md-tooltip>
+            </md-button>
+            <span flex></span>
+            <span layout="row" layout-align="end center">
+                <span><span class="fa fa-sort-amount-desc"></span></span>
+                <md-select ng-model="$ctrl.search.sortBy" md-on-close="$ctrl.update()" style="margin: 10px 0; min-width: 180px" aria-label="Sort By">
+                    <md-option ng-repeat="sortOpt in $ctrl.sortOpts" value="{{sortOpt}}">{{sortOpt}}</md-option>
+                </md-select>
+            </span>
+        </div>
+    </div>
+</div>
+<div layout="row" layout-wrap layout-align="space-between start" ng-show="$ctrl.showCategories" class="categories-select">
+    <div ng-repeat="(cat, group) in $ctrl.tags" flex style="min-width:250px" ng-show="$ctrl.hasAvailableTags(group)">
+        <div style="margin: 5px 0 10px 0"><b>{{cat}}</b></div>
+        <tag tagname="{{tag}}" state="$ctrl.tagstates[tag]" on-update="$ctrl.updateTagState(tagname, state)" ng-repeat="tag in group track by $index" ng-show="$ctrl.isAvailable(tag)"></tag>
+    </div>
+</div>

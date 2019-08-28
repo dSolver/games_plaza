@@ -1,0 +1,74 @@
+<md-content layout-fill ng-controller="ListGames as vm">
+    <div layout="row" layout-fill>
+        <md-content>
+            <div layout="row">
+                <md-button class="md-icon-button" ng-click="vm.changeDisplayMode('list')" ng-class="{'md-primary':vm.displayMode=='list'}">
+                    <span class="fa fa-th-list"></span>
+                    <md-tooltip>List view</md-tooltip>
+                </md-button>
+                <md-button class="md-icon-button" ng-click="vm.changeDisplayMode('tile')" ng-class="{'md-primary':vm.displayMode=='tile'}">
+                    <span class="fa fa-th"></span>
+                    <md-tooltip>Tile view</md-tooltip>
+                </md-button>
+            </div>
+            <div layout="row" layout-align="start center">
+                <h3 style="margin-right: 16px">{{vm.games.length}} Games </h3>
+
+                <div class="md-padding" style="text-align: right" ng-repeat="(filtername, filter) in vm.filters">
+                    <md-checkbox ng-model="vm.filters[filtername].on" ng-if="vm.authentication.user" ng-change="vm.applyFilters()" style="margin-bottom: 0">Hide Reviewed</md-checkbox>
+                </div>
+                <span flex></span>
+                <md-button aria-label="Submit a Game" class="md-accent md-raised md-margin" ng-click="vm.openCreator()" ng-if="vm.canCreateGame">
+                    Submit a Game
+                </md-button>
+            </div>
+            <div>
+                <game-search on-update="vm.applySearch(search)" available-tags="vm.availableTags"></game-search>
+            </div>
+            
+            <md-content class="gamelist">
+                <md-content layout="row" layout-align="start start">
+                    <div ng-switch="vm.displayMode" ng-hide="vm.loading">
+                        <div ng-switch-when="list">
+                            <div layout-margin layout-padding></div>
+                            <div ng-repeat="game in vm.gamesDisplayed track by game._id" style="background-color: rgba(0, 0, 0, 0.2)" class="md-margin md-padding">
+                                <div class="md-title">
+                                    <a ui-sref="viewGame({gameId:game.slug})">{{game.name}}</a>
+                                    <span></span>
+                                    <span ng-if="game.liked" class="md-margin">
+                                        <span class="fa fa-heart"></span> {{game.liked}}
+                                    </span>
+                                    <span ng-if="game.rating" class="md-margin">
+                                        <span class="fa fa-star"></span> {{game.rating | number:1}}
+                                    </span>
+                                </div>
+                                <div class="taglist">
+                                    <b>Tags:</b>
+                                    <span ng-repeat="tag in game.tags track by $index">{{tag}}{{$last ? '' : ', '}}</span>
+                                    <span ng-hide="game.tags.length > 0">No Tags Yet</span>
+                                </div>
+                                <div>{{game.shortDescription}}</div>
+                            </div>
+                        </div>
+                        <div ng-switch-when="tile" class="gameTiles clearfix" style="margin: 5px 0px">
+                            <game-tile game-id="game._id" notags="true" ng-repeat="game in vm.gamesDisplayed track by game._id"></game-tile>
+                        </div>
+                    </div>
+                    <div style="min-width: 300px; height: 500px; position: relative; overflow:hidden;" hide-xs hide-sm>
+                        <!-- <adsense ad-client="ca-pub-3539504993894756" ad-slot="3418347022" inline-style="display:block;width:100%;height:100%" ad-format="auto"></adsense> -->
+                        <a href="https://store.steampowered.com/app/734980/Prosperity/" target="new">
+                            <img src="modules/core/img/prosperity/prosperity-large-vertical.jpg">
+                        </a>
+                    </div>
+                </md-content>
+                <div ng-hide="vm.games.length">
+                    No Games Yet
+                </div>
+            </md-content>
+        </md-content>
+    </div>
+    <div ng-if="vm.loading && !vm.games">
+        Loading Games
+        <md-progress-circular class="md-hue-2" md-mode="indeterminate"></md-progress-circular>
+    </div>
+</md-content>

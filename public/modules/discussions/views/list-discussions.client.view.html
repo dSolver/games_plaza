@@ -1,0 +1,21 @@
+<md-content data-ng-controller="DiscussionsController" data-ng-init="find()" layout-padding>
+    <div class="page-header">
+        <h1>All Discussions</h1>
+    </div>
+    
+    <md-virtual-repeat-container style="height: 400px">
+        <div md-virtual-repeat="discussion in discussions" flex>
+            <a data-ng-href="/discussions/{{discussion._id}}/{{discussion.slug}}">{{discussion.name}}</a>
+            <br>
+            <small class="list-group-item-text">
+                Posted on
+                <span data-ng-bind="discussion.created | date:'medium'"></span>
+                by
+                <a ui-sref="member({username: discussion.user.username})" data-ng-bind="discussion.user.username"></a>
+            </small>
+        </div>
+    </md-virtual-repeat-container>
+    <div class="alert alert-warning text-center" data-ng-hide="!discussions.$resolved || discussions.length">
+        No Discussions yet, why don't you <a href="/discussions/create">create one</a>?
+    </div>
+</md-content>

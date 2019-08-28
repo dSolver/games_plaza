@@ -1,0 +1,45 @@
+<md-dialog>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h3>Playlists</h3>
+            <span flex></span>
+            <md-button ng-click="closeDialog()" class="md-icon-button" aria-label="Close">
+                <md-icon class="fa fa-lg" md-font-icon="fa-times"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <md-content ng-show="loadingPlaylist" layout="row" layout-align="center center">
+            <span class="fa fa-refresh fa-spin"></span>
+        </md-content>
+        <md-content ng-hide="loadingPlaylist">
+            <md-content layout="column" ng-show="playlistState=='list'">
+                <md-list>
+                    <md-list-item ng-repeat="list in playlists track by list._id" ng-click="tryAdd(list)">
+                        <span>{{list.name}}</span><span flex></span><span>{{list.games.length}}</span>
+                    </md-list-item>
+                    <md-list-item ng-click="createNewPlaylist()">
+                    <span>Create New</span>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+            <md-content layout="column" ng-show="playlistState=='create'">
+                <md-input-container>
+                    <label>Title</label>
+                    <input type="text" data-ng-model="playlist.name">
+                </md-input-container>
+                <md-input-container>
+                    <label>Description</label>
+                    <textarea ng-model="playlist.description"></textarea>
+                </md-input-container>
+                <div class="md-actions" layout="row" layout-align="bottom right">
+                    <md-button ng-click="createPlaylist()" class="md-primary" aria-label="Submit">Submit</md-button>
+                    <md-button ng-click="closeDialog()" class="md-primary" aria-label="Cancel">Cancel</md-button>
+                    <div data-ng-show="error" class="text-danger">
+                        <strong data-ng-bind="error"></strong>
+                    </div>
+                </div>
+            </md-content>
+        </md-content>
+    </md-dialog-content>
+</md-dialog>

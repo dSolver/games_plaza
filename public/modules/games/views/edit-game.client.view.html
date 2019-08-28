@@ -1,0 +1,118 @@
+<md-dialog class="fullscreen-dialog">
+    <md-toolbar class="md-primary">
+        <div class="md-toolbar-tools">
+            <h3>Edit {{game.name}}</h3>
+            <span flex></span>
+            <md-button ng-click="closeDialog()" class="md-icon-button" aria-label="Close">
+                <md-icon class="fa fa-lg" md-font-icon="fa-times"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div layout="column">
+            <md-input-container>
+                <label>Name (Could take a few minutes to update in the list)</label>
+                <input type="text" ng-model="game.name" required>
+            </md-input-container>
+            <md-input-container>
+                <label>Link</label>
+                <input type="text" ng-model="game.link" required>
+            </md-input-container>
+            <md-input-container ng-if="game.logo && canAdmin">
+                <label>Logo</label>
+                <input type="text" ng-model="game.logo">
+            </md-input-container>
+            <div ng-if="canAdmin">
+                <md-switch ng-model="game.playable" class="md-accent">Playable</md-switch>
+            </div>
+            <md-select placeholder="Status" ng-model="game.status" flex="30" style="min-width:180px">
+                <md-option ng-repeat="status in statuses" value="{{status}}">{{status}}</md-option>
+            </md-select>
+            <md-input-container flex>
+                <label>Version</label>
+                <input type="text" ng-model="game.version">
+            </md-input-container>
+            <md-input-container ng-if="canAdmin">
+                <label>Creators</label>
+                <input type="text" ng-model="game.creatorNamesArr">
+            </md-input-container>
+            <md-input-container>
+                <label>Short Description (to show up in the list)</label>
+                <input type="text" ng-model="game.shortDescription">
+            </md-input-container>
+            <md-input-container>
+                <label>Description</label>
+                <textarea ng-model="game.description"></textarea>
+            </md-input-container>
+        </div>
+        <div layout="column">
+            <h3>Embed Media</h3>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-youtube" class="fa fa-lg icon youtube"></md-icon>
+                <input type="text" ng-model="game.youtube" placeholder="Youtube Video ID (e.g. ptk93AyICH0 in https://youtu.be/ptk93AyICH0)">
+            </md-input-container>
+            <h3>Social Media</h3>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-rettiwt" class="fa fa-lg icon rettiwt"></md-icon>
+                <input type="text" ng-model="game.developer_twitter" placeholder="Twitter Handle (e.g. @dSolver)">
+            </md-input-container>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-twitch" class="fa fa-lg icon twitch"></md-icon>
+                <input type="text" ng-model="game.twitch" placeholder="Twitch Handle (e.g. dSolver)">
+            </md-input-container>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-koobecaf" class="fa fa-lg icon koobecaf"></md-icon>
+                <input type="text" ng-model="game.facebook" placeholder="Facebook Page (e.g. https://www.facebook.com/dSolver)">
+            </md-input-container>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-tidder" class="fa fa-lg icon tidder"></md-icon>
+                <input type="text" ng-model="game.subreddit" placeholder="Subreddit e.g. incremental_games">
+            </md-input-container>
+            <h3>App Store</h3>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-android" class="fa fa-lg icon android"></md-icon>
+                <input type="text" ng-model="game.googlePlay" placeholder="Google Play Store (e.g. https://play.google.com/store/apps/details?id=com.google.android.keep)">
+            </md-input-container>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-apple" class="fa fa-lg icon appStore"></md-icon>
+                <input type="text" ng-model="game.appStore" placeholder="iTunes App Store (e.g. https://itunes.apple.com/ca/app/google/id284815942)">
+            </md-input-container>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-windows" class="fa fa-lg icon windows"></md-icon>
+                <input type="text" ng-model="game.windowsStore" placeholder="Windows App Store (e.g. http://apps.microsoft.com/windows/en-gb/app/skype/5e19cc61-8994-4797-bdc7-c21263f6282b)">
+            </md-input-container>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-steam" class="fa fa-lg icon steam"></md-icon>
+                <input type="text" ng-model="game.steamStore" placeholder="Steam">
+            </md-input-container>
+            <h3>Repository</h3>
+            <md-input-container md-no-float>
+                <md-icon md-font-icon="fa-github" class="fa fa-lg icon github"></md-icon>
+                <input type="text" ng-model="game.github" placeholder="Github">
+            </md-input-container>
+            <h3>Other Sites</h3>
+            <md-input-container md-no-float>
+                <label>Kongregate</label>
+                <input type="text" ng-model="game.kongregate" />
+            </md-input-container>
+            <md-input-container md-no-float>
+                <label>Armor Games</label>
+                <input type="text" ng-model="game.armorGames" />
+            </md-input-container>
+            <md-input-container md-no-float>
+                <label>Newgrounds</label>
+                <input type="text" ng-model="game.newgrounds" />
+            </md-input-container>
+            <h4>If you have more links to add, feel free to put them in game description</h4>
+        </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row" layout-align="bottom right">
+        <span data-ng-show="error" class="md-warn">
+            <strong data-ng-bind="error"></strong>
+        </span>
+        <span flex></span>
+        <md-button ng-click="closeDialog()" aria-label="Cancel" class="md-default">Cancel</md-button>
+        <md-button ng-click="update()" class="md-primary md-raised" aria-label="Update Game">Update Game</md-button>
+        
+    </div>
+</md-dialog>

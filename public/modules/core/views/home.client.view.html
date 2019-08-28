@@ -1,0 +1,51 @@
+<md-content layout-gt-md="column" ng-controller="HomeController as vm" class="panel-clear">
+    <div class="banner">Looking for a game but can't find it, or looking for games fitting a vague description? Try the <a href="https://www.reddit.com/r/games_plaza">/r/games_plaza Subreddit</a>!</div>
+    <md-content>
+        <a href="https://store.steampowered.com/app/734980/Prosperity/" target="new" class="hero">
+            Prosperity now on Steam Early Access
+        </a>
+    </md-content>
+    <md-content layout-margin layout="row" layout-align="center start">
+        <game-search on-update="vm.setSearch(search)" on-ready="vm.searchReady()" oneline="true" flex></game-search>
+        <div layout="row" layout-margin layout-align="center center" ng-show="vm.searchIsReady">
+            <md-button class="md-accent md-icon-button md-fab" ng-click="vm.doSearch()" layout="row" layout-margin layout-align="center center">
+                <span class="fa fa-arrow-right fa-64"></span>
+            </md-button>
+        </div>
+    </md-content>
+    <md-content class="md-margin">
+        <div layout="row" layout-align="space-between center" class="md-title">
+            <span>Featured Games</span>
+            <span flex></span>
+            <a ui-sref='listGames'>Full List</a>
+        </div>
+        <div class="md-padding gameTiles single-row nodescript clearfix">
+            <game-tile game-id="tile._id" ng-repeat="tile in vm.featuredGames track by $index" notags="true"></game-tile>
+        </div>
+    </md-content>
+    <md-content class="md-margin">
+        <div class="md-title">
+            Newly Added Games
+        </div>
+        <div class="md-padding gameTiles nodescript clearfix single-row">
+            <div ng-repeat="tile in vm.newGames track by $index" class="md-margin">
+                <game-tile game-id="tile._id" notags="true"></game-tile>
+                <div class="footer">
+                    <span am-time-ago="tile.created"></span> by <a ng-href="/m/{{tile.user.username}}">{{tile.user.username}}</a>
+                </div>
+            </div>
+        </div>
+    </md-content>
+    <md-content class="md-margin">
+        <h3>
+            About The Incremental Games Plaza
+        </h3>
+        <div class="md-padding">
+            <p>The Incremental Games Plaza is a community curated list of incremental games. This includes clicker games, idle games, unlocking games, etc.</p>
+            <p>What sets us apart from lists like the Ultimate List of Incremental Games is that we provide the ability to add multiple tags, youtube videos, and anyone can upload screenshots of the games they love</p>
+            <p>Users can also review games, like games, create playlists, and participate in discussions. It's like a mini community site.</p>
+            <p>Game developers are encouraged to add their games to the site provided they are playable. Games with logos, descriptions, and tags are also searchable with our built-in search engine.</p>
+            <p>Best of all, just log in with Reddit. Why Reddit? Because we love the /r/incremental_games community!</p>
+        </div>
+    </md-content>
+</md-content>
